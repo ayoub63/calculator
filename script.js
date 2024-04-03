@@ -24,11 +24,11 @@ function operate(num1, operator, num2) {
 }
 
 function percentage(num1, num2) {
-  return (num1 * 100) / num2 + "%";
+  return Math.round(((num1 * 100) / num2) * 100) / 100 + "%";
 }
 
 function add(num1, num2) {
-  return num1 + num2;
+  return Math.round((num1 + num2) * 100) / 100;
 }
 
 function subtract(num1, num2) {
@@ -36,7 +36,11 @@ function subtract(num1, num2) {
 }
 
 function divide(num1, num2) {
-  return Math.round((num1 / num2) * 100) / 100;
+  if (num2 === 0) {
+    return "lmao";
+  } else {
+    return Math.round((num1 / num2) * 100) / 100;
+  }
 }
 
 function multiply(num1, num2) {
@@ -111,8 +115,10 @@ function inputContent() {
           break;
         case "=":
           process(display);
-          deleteDisplay(display);
-          display.value += operate(num1, operator, num2);
+          if (num1 != null && num2 != null && operator != null) {
+            deleteDisplay(display);
+            display.value += operate(num1, operator, num2);
+          }
           break;
       }
     });
@@ -120,10 +126,25 @@ function inputContent() {
 }
 
 function process(display) {
-  numbers = display.value.split(/[^a-zA-Z0-9.]+/);
-  num1 = numbers[0];
-  num2 = numbers[1];
-  nonNumber = display.value.match(/[^a-zA-Z0-9.]/);
-  operator = nonNumber[0];
+  if (display.value.charAt(0) === "-") {
+    numbers = display.value.split(/[\+\*\/\(\)]/);
+    num1 = Number(numbers[0]);
+  } else {
+    numbers = display.value.split(/[\+\-\*\/\%]/);
+    num1 = Number(numbers[0]);
+  }
+  num2 = Number(numbers[1]);
+
+  if (display.value.charAt(0) === "-") {
+    nonNumber = display.value.match(/[^a-zA-Z0-9.\-\(\)]/);
+    operator = nonNumber[0];
+  } else {
+    nonNumber = display.value.match(/[^a-zA-Z0-9.]/);
+    operator = nonNumber[0];
+  }
+  console.log(nonNumber);
+  console.log(numbers[0]);
+  console.log(num2);
+  console.log(operator);
 }
 inputContent();
